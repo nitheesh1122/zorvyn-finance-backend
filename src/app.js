@@ -22,7 +22,7 @@ app.use((request, response, next) => {
   next(new ApiError(404, `Route not found: ${request.originalUrl}`));
 });
 
-app.use((error, request, response, next) => {
+app.use((error, request, response) => {
   const statusCode = error.statusCode || 500;
   const message = error.message || 'Internal Server Error';
 
