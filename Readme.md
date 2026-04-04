@@ -1,161 +1,237 @@
 # Zorvyn Finance Backend
 
-This project was developed as part of a screening assignment for **Zorvyn FinTech Pvt. Ltd.**
+This project was developed as part of a screening assignment for Zorvyn FinTech Pvt. Ltd.
 It is not an official product or affiliated repository.
 
----
+## Overview
 
-## 🚀 Overview
+Zorvyn Finance Backend is a role-based financial records API built with Node.js, Express, and MongoDB.
 
-A backend system for managing financial records with secure authentication, role-based access control, and analytics APIs.
+The project is organized with a clean layered structure:
 
-The system is designed with a clean architecture using controllers, services, and middleware.
+- Routes handle URL mapping and middleware chaining.
+- Controllers handle request and response flow.
+- Services contain core business logic.
+- Models define persistence schemas.
+- Middleware provides authentication, RBAC, and shared guards.
 
----
+## Core Project Features
 
-## 🧠 Features
+### Authentication
 
-### 🔐 Authentication
+- JWT-based authentication
+- Access and refresh token flow
+- Password hashing with bcrypt
 
-* JWT-based authentication (Access + Refresh tokens)
-* Secure password hashing using bcrypt
-* Token refresh mechanism
+### Financial Records Management
 
-### 🔒 Role-Based Access Control (RBAC)
+- Create, read, update, and soft-delete records
+- Record fields: amount, type, category, date, notes, createdBy, isDeleted
+- User-level data isolation (users can access only their own records)
+- Filtering support for type, category, and date range
+- Pagination support for list endpoints
 
-* Viewer → Dashboard access only
-* Analyst → Dashboard + read access to records
-* Admin → Dashboard + full record CRUD
+### Dashboard APIs
 
-### 🛡️ Security
+- Summary metrics endpoint (income, expense, balance, record count)
+- Category breakdown endpoint with totals and counts
+- Date range filters for dashboard analytics
 
-* Helmet for secure headers
-* Rate limiting
-* Input validation
-* Global error handling
+### Role-Based Access Control
 
-### 📊 APIs (Current)
+- Viewer: dashboard access
+- Analyst: dashboard access + records read
+- Admin: dashboard access + full record CRUD
 
-* User registration & login
-* Token refresh
-* Protected routes
-* Financial records CRUD with filters and pagination
-* Dashboard summary and category analytics
+### Role Permissions Table
 
----
+| Endpoint | Viewer | Analyst | Admin |
+| --- | --- | --- | --- |
+| GET /dashboard/summary | Yes | Yes | Yes |
+| GET /dashboard/categories | Yes | Yes | Yes |
+| GET /records | No | Yes | Yes |
+| POST /records | No | No | Yes |
+| PUT /records/:id | No | No | Yes |
+| DELETE /records/:id | No | No | Yes |
+| GET /auth/me | Yes | Yes | Yes |
+| GET /auth/admin | No | No | Yes |
 
-## 🛠 Tech Stack
+### Security and Reliability
 
-* Node.js
-* Express.js
-* MongoDB (Mongoose)
-* JWT Authentication
+- Helmet for secure HTTP headers
+- API rate limiting
+- Centralized async error handling
+- Consistent JSON response format
 
----
+## Tech Stack
 
-## 📁 Project Structure
+- Node.js
+- Express.js
+- MongoDB with Mongoose
+- JWT authentication
 
-```
+## Project Structure
+
+```text
 src/
   config/
-  models/
   controllers/
-  services/
-  routes/
   middleware/
-  validators/
+  models/
+  routes/
+  services/
   utils/
+  validators/
 ```
 
----
+## API Surface
 
-## 📦 API Endpoints
+Base URL: /api/v1
 
-### 🔐 Auth
+### Auth
 
-* POST /api/v1/auth/register
-* POST /api/v1/auth/login
-* POST /api/v1/auth/refresh
+- POST /auth/register
+- POST /auth/login
+- POST /auth/refresh
 
-### 🔒 Protected
+### Protected Utility
 
-* GET /api/v1/auth/me
-* GET /api/v1/auth/admin
+- GET /auth/me
+- GET /auth/admin
 
-### 📈 Dashboard
+### Dashboard
 
-* GET /api/v1/dashboard/summary?startDate=&endDate=
-* GET /api/v1/dashboard/categories?type=&startDate=&endDate=
+- GET /dashboard/summary
+- GET /dashboard/categories
 
-### 💰 Records
+Optional query params:
 
-* POST /api/v1/records
-* GET /api/v1/records?type=&category=&startDate=&endDate=&page=&limit=
-* PUT /api/v1/records/:id
-* DELETE /api/v1/records/:id
+- startDate
+- endDate
+- type (for category endpoint)
 
-### 👥 Role Matrix
+### Records
 
-* Viewer → Dashboard endpoints only
-* Analyst → Dashboard + GET records
-* Admin → Dashboard + full record CRUD
+- POST /records
+- GET /records
+- PUT /records/:id
+- DELETE /records/:id
 
----
+Optional query params for list endpoint:
 
-## ⚙️ Setup Instructions
+- type
+- category
+- startDate
+- endDate
+- page
+- limit
 
-1. Clone the repository
+## Request Examples
 
+Use an access token from login in the Authorization header.
+
+### 1) Register
+
+```bash
+curl -X POST http://localhost:5000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Demo User",
+    "email": "demo@example.com",
+    "password": "password123"
+  }'
 ```
+
+### 2) Login
+
+```bash
+curl -X POST http://localhost:5000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "demo@example.com",
+    "password": "password123"
+  }'
+```
+
+### 3) Create Record (Admin)
+
+```bash
+curl -X POST http://localhost:5000/api/v1/records \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+  -d '{
+    "amount": 1200,
+    "type": "income",
+    "category": "Salary",
+    "date": "2026-04-01",
+    "notes": "Monthly salary"
+  }'
+```
+
+### 4) Get Records with Filters (Analyst/Admin)
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/records?type=expense&category=Food&startDate=2026-04-01&endDate=2026-04-30&page=1&limit=10" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+### 5) Dashboard Summary
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/dashboard/summary?startDate=2026-04-01&endDate=2026-04-30" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+### 6) Category Breakdown
+
+```bash
+curl -X GET "http://localhost:5000/api/v1/dashboard/categories?type=expense&startDate=2026-04-01&endDate=2026-04-30" \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN"
+```
+
+## Setup
+
+1. Clone the repository.
+2. Install dependencies.
+3. Configure environment variables.
+4. Run the server.
+
+```bash
 git clone https://github.com/nitheesh1122/zorvyn-finance-backend.git
 cd zorvyn-finance-backend
-```
-
-2. Install dependencies
-
-```
 npm install
 ```
 
-3. Create `.env` file
+Create a .env file:
 
-```
+```env
 PORT=5000
-MONGO_URI=your_mongodb_uri
-JWT_ACCESS_SECRET=your_secret
-JWT_REFRESH_SECRET=your_refresh_secret
+MONGO_URI=mongodb://127.0.0.1:27017/zorvyn_finance
+JWT_ACCESS_SECRET=change-this-access-secret
+JWT_REFRESH_SECRET=change-this-refresh-secret
 ```
 
-4. Run the server
+Start the server:
 
-```
+```bash
 npm run dev
 ```
 
----
+## Validation and Testing
 
-## 🧪 Testing
+- Run lint checks:
 
-APIs were tested using Postman.
+```bash
+npm run lint
+```
 
-* Register user
-* Login user
-* Refresh token
-* Test protected routes
-* Test RBAC (viewer vs analyst vs admin)
-* Test records filters and pagination
-* Test dashboard aggregation endpoints
+- APIs can be verified with Postman for auth, RBAC, records, and dashboard routes.
 
----
+## Notes
 
-## 📌 Notes
+- This repository is focused on clean architecture and maintainable backend structure.
+- Soft deletion is used for records instead of permanent delete.
 
-* Focused on clean backend architecture and secure API design
-* Error handling ensures consistent JSON responses
-* Designed for scalability and maintainability
-
----
-
-## 📄 License
+## License
 
 This project is for assessment purposes only.
