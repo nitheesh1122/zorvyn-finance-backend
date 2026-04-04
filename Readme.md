@@ -24,8 +24,8 @@ The system is designed with a clean architecture using controllers, services, an
 ### 🔒 Role-Based Access Control (RBAC)
 
 * Viewer → Dashboard access only
-* Analyst → Read access to records
-* Admin → Full access (CRUD + user control)
+* Analyst → Dashboard + read access to records
+* Admin → Dashboard + full record CRUD
 
 ### 🛡️ Security
 
@@ -39,7 +39,8 @@ The system is designed with a clean architecture using controllers, services, an
 * User registration & login
 * Token refresh
 * Protected routes
-* Admin-only routes
+* Financial records CRUD with filters and pagination
+* Dashboard summary and category analytics
 
 ---
 
@@ -80,6 +81,24 @@ src/
 
 * GET /api/v1/auth/me
 * GET /api/v1/auth/admin
+
+### 📈 Dashboard
+
+* GET /api/v1/dashboard/summary?startDate=&endDate=
+* GET /api/v1/dashboard/categories?type=&startDate=&endDate=
+
+### 💰 Records
+
+* POST /api/v1/records
+* GET /api/v1/records?type=&category=&startDate=&endDate=&page=&limit=
+* PUT /api/v1/records/:id
+* DELETE /api/v1/records/:id
+
+### 👥 Role Matrix
+
+* Viewer → Dashboard endpoints only
+* Analyst → Dashboard + GET records
+* Admin → Dashboard + full record CRUD
 
 ---
 
@@ -123,7 +142,9 @@ APIs were tested using Postman.
 * Login user
 * Refresh token
 * Test protected routes
-* Test RBAC (admin vs viewer)
+* Test RBAC (viewer vs analyst vs admin)
+* Test records filters and pagination
+* Test dashboard aggregation endpoints
 
 ---
 

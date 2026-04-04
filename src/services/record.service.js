@@ -2,48 +2,14 @@ import mongoose from 'mongoose';
 
 import FinancialRecord from '../models/FinancialRecord.js';
 import ApiError from '../utils/ApiError.js';
-
-const allowedRecordTypes = ['income', 'expense'];
-
-const parsePositiveNumber = (value, fieldName) => {
-  const numberValue = Number(value);
-
-  if (!Number.isFinite(numberValue) || numberValue <= 0) {
-    throw new ApiError(400, `${fieldName} must be a number greater than 0`);
-  }
-
-  return numberValue;
-};
-
-const normalizeType = (type) => {
-  if (typeof type !== 'string' || !allowedRecordTypes.includes(type)) {
-    throw new ApiError(400, 'Type must be either income or expense');
-  }
-
-  return type;
-};
-
-const normalizeCategory = (category) => {
-  if (typeof category !== 'string' || !category.trim()) {
-    throw new ApiError(400, 'Category is required');
-  }
-
-  return category.trim();
-};
-
-const parseOptionalDate = (value, fieldName) => {
-  if (value === undefined || value === null || value === '') {
-    return undefined;
-  }
-
-  const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    throw new ApiError(400, `${fieldName} must be a valid date`);
-  }
-
-  return date;
-};
+import {
+  buildDateFilter,
+  normalizeCategory,
+  normalizeRecordType,
+  parseOptionalDate,
+  parsePagination,
+  parsePositiveAmount
+} from '../validators/record.validator.js';
 
 const getValidatedUserId = (userId) => {
   if (!mongoose.isValidObjectId(userId)) {
@@ -57,8 +23,8 @@ const createRecord = async ({ amount, type, category, date, notes, userId }) => 
   const ownerId = getValidatedUserId(userId);
 
   const record = await FinancialRecord.create({
-    amount: parsePositiveNumber(amount, 'Amount'),
-    type: normalizeType(type),
+    amount: parsePositiveAmount(amount),
+    type: normalizeRecordType(type),
     category: normalizeCategory(category),
     date: parseOptionalDate(date, 'Date') || new Date(),
     notes: typeof notes === 'string' ? notes.trim() : undefined,
@@ -71,8 +37,7 @@ const createRecord = async ({ amount, type, category, date, notes, userId }) => 
 const getRecords = async ({ userId, type, category, startDate, endDate, page = 1, limit = 10 }) => {
   const ownerId = getValidatedUserId(userId);
 
-  const parsedPage = Math.max(parseInt(page, 10) || 1, 1);
-  const parsedLimit = Math.min(Math.max(parseInt(limit, 10) || 10, 1), 100);
+  const pagination = parsePagination(page, limit);
 
   const query = {
     createdBy: ownerId,
@@ -80,45 +45,34 @@ const getRecords = async ({ userId, type, category, startDate, endDate, page = 1
   };
 
   if (type !== undefined) {
-    query.type = normalizeType(type);
+    query.type = normalizeRecordType(type);
   }
 
   if (typeof category === 'string' && category.trim()) {
     query.category = category.trim();
   }
 
-  const parsedStartDate = parseOptionalDate(startDate, 'startDate');
-  const parsedEndDate = parseOptionalDate(endDate, 'endDate');
+  const dateFilter = buildDateFilter({ startDate, endDate });
 
-  if (parsedStartDate || parsedEndDate) {
-    query.date = {};
-
-    if (parsedStartDate) {
-      query.date.$gte = parsedStartDate;
-    }
-
-    if (parsedEndDate) {
-      query.date.$lte = parsedEndDate;
-    }
+  if (dateFilter) {
+    query.date = dateFilter;
   }
-
-  const skip = (parsedPage - 1) * parsedLimit;
 
   const [records, total] = await Promise.all([
     FinancialRecord.find(query)
       .sort({ date: -1, createdAt: -1 })
-      .skip(skip)
-      .limit(parsedLimit),
+      .skip(pagination.skip)
+      .limit(pagination.limit),
     FinancialRecord.countDocuments(query)
   ]);
 
   return {
     records,
     pagination: {
-      page: parsedPage,
-      limit: parsedLimit,
+      page: pagination.page,
+      limit: pagination.limit,
       total,
-      totalPages: Math.max(Math.ceil(total / parsedLimit), 1)
+      totalPages: Math.max(Math.ceil(total / pagination.limit), 1)
     }
   };
 };
@@ -141,11 +95,11 @@ const updateRecord = async ({ recordId, userId, amount, type, category, date, no
   }
 
   if (amount !== undefined) {
-    record.amount = parsePositiveNumber(amount, 'Amount');
+    record.amount = parsePositiveAmount(amount);
   }
 
   if (type !== undefined) {
-    record.type = normalizeType(type);
+    record.type = normalizeRecordType(type);
   }
 
   if (category !== undefined) {
