@@ -217,6 +217,24 @@ Start the server:
 npm run dev
 ```
 
+## Database Seeding
+
+Populate test users for RBAC verification:
+
+```bash
+npm run seed
+```
+
+Seeded users:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | admin@test.com | 123456 |
+| Analyst | analyst@test.com | 123456 |
+| Viewer | viewer@test.com | 123456 |
+
+The seed script removes existing users with these emails before creating them again.
+
 ## Validation and Testing
 
 - Run lint checks:
