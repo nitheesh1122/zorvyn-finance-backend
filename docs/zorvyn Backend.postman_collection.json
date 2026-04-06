@@ -1,0 +1,345 @@
+{
+  "info": {
+    "_postman_id": "0dfda957-57b1-445d-95c2-9be58adc9137",
+    "name": "zorvyn Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42352348"
+  },
+  "item": [
+    {
+      "name": "AUTH APIs",
+      "item": [
+        {
+          "name": "User registration",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Test User\",\r\n  \"email\": \"testuser@example.com\",\r\n  \"password\": \"123456789\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login(admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQwZTFiY2RmOTQxODJiMGRjODlmMzQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzU0NTIzMzQsImV4cCI6MTc3NTQ1MzIzNH0.iBiL0qMC42tNPBmOFZahYHURcsrIA43oIJNe1i1gm7s",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"admin@test.com\",\r\n  \"password\": \"123456\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQwZTFiY2RmOTQxODJiMGRjODlmMzQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzU0NTIzMzQsImV4cCI6MTc3NTQ1MzIzNH0.iBiL0qMC42tNPBmOFZahYHURcsrIA43oIJNe1i1gm7s",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/me",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Routes",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQwZTFiY2RmOTQxODJiMGRjODlmMzQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzU0NTIzMzQsImV4cCI6MTc3NTQ1MzIzNH0.iBiL0qMC42tNPBmOFZahYHURcsrIA43oIJNe1i1gm7s",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/admin",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Records",
+      "item": [
+        {
+          "name": "insert record",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQwZTFiY2RmOTQxODJiMGRjODlmMzQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzU0NTIzMzQsImV4cCI6MTc3NTQ1MzIzNH0.iBiL0qMC42tNPBmOFZahYHURcsrIA43oIJNe1i1gm7s",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 1200,\r\n  \"type\": \"income\",\r\n  \"category\": \"Salary\",\r\n  \"date\": \"2026-04-01\",\r\n  \"notes\": \"Monthly salary\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/records",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "records"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fetch all recrods",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQwZTFiY2RmOTQxODJiMGRjODlmMzQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzU0NTI3NDUsImV4cCI6MTc3NTQ1MzY0NX0.V8xO8SkVQaprSV5kHbuvIViEXRv-mSFpY5vhoX7gLRE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/records",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "records"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter(income)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQwZTFiY2RmOTQxODJiMGRjODlmMzQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzU0NTI3NDUsImV4cCI6MTc3NTQ1MzY0NX0.V8xO8SkVQaprSV5kHbuvIViEXRv-mSFpY5vhoX7gLRE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/records?type=income",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "records"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "income"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Filter(salary)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQwZTFiY2RmOTQxODJiMGRjODlmMzQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzU0NTI3NDUsImV4cCI6MTc3NTQ1MzY0NX0.V8xO8SkVQaprSV5kHbuvIViEXRv-mSFpY5vhoX7gLRE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/records?category=Salary",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "records"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "Salary"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update record",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2OWQwZTFiY2RmOTQxODJiMGRjODlmMzQiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3NzU0NTI3NDUsImV4cCI6MTc3NTQ1MzY0NX0.V8xO8SkVQaprSV5kHbuvIViEXRv-mSFpY5vhoX7gLRE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"amount\": 1500,\r\n  \"notes\": \"Updated salary\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/records/69d0e1bcdf94182b0dc89f34",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "5000",
+              "path": [
+                "api",
+                "v1",
+                "records",
+                "69d0e1bcdf94182b0dc89f34"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
